@@ -2,4 +2,4 @@
 
 **author:** hmorlive mail@hazmedmoreno.com
 
-Simple frontend and AWS Lambda Backend via HTTP API to collect registrant information for family gift exchange gift exchange.
+Simple frontend and AWS Lambda Backend via HTTP API to collect registrant information for family Xmas gift exchange.
