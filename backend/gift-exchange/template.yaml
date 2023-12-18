@@ -23,6 +23,9 @@ Parameters:
     Type: String
     Description: The domain name for the API
     Default: '*' #for local testing
+  DiscordWebhookUrl:
+    Type: String
+    Description: The Discord webhook URL
 
 Conditions:
   IsProd: !Equals [!Ref Env, "prod"]
@@ -80,6 +83,7 @@ Resources:
         Variables:
           ENV: !Ref Env
           TABLE: !Ref TableName
+          DISCORD_WEBHOOK_URL: !Ref DiscordWebhookUrl
       Policies:
         - DynamoDBWritePolicy:
             TableName: !Ref TableName
