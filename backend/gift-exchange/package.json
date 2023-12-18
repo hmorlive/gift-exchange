@@ -1,0 +1,14 @@
+{
+  "name": "gift-exchange",
+  "version": "1.0.0",
+  "description": "Collects registrant information and stores in text file inside S3 bucket.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hazmed Moreno",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.474.0"
+  }
+}

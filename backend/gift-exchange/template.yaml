@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  gift-exchange
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+
+Parameters: 
+  Env:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - prod
+      - dev
+  TableName:
+    Type: String
+    Description: The name of the DynamoDB table
+    Default: gift-exchange-table
+  DomainName:
+    Type: String
+    Description: The domain name for the API
+    Default: '*' #for local testing
+
+Conditions:
+  IsProd: !Equals [!Ref Env, "prod"]
+
+Resources:
+  # DynamoDB Table
+  DataBase:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref TableName
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: email
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  # Gift Exchange API
+  HTTPApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowMethods:
+          - POST
+        AllowHeaders:
+          - Content-Type
+        AllowOrigins:
+          - !Ref DomainName
+      Name: gift-exchange-api
+
+  # Register User Function
+  RegisterUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: register/
+      Handler: app.lambdaHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HTTPApi
+            Path: /register
+            Method: POST
+      Environment:
+        Variables:
+          ENV: !Ref Env
+          TABLE: !Ref TableName
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref TableName
